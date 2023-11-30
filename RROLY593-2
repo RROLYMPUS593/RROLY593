@@ -192,9 +192,6 @@ class Olympus593:
         plt.ylabel("Value")
         plt.legend()
         plt.show()
-     def perform_thermodynamic_analysis(self):
-        # Thermodynamic analysis calculations
-        # You can include the T-s diagram and other calculations here
 
     def simulate_engine(self):
         for throttle in range(5):
@@ -211,12 +208,6 @@ class Olympus593:
                 engine.display_engine_specs()  # New method to display engine specifications
             self.perform_thermodynamic_analysis()  # Call the thermodynamic analysis function
             time.sleep(1)
- SPEED_OF_SOUND = {
-        15000: 720.8,  # mph
-        20000: 706.9,  # mph
-        25000: 692.6   # mph
-        # Add more altitudes and corresponding speeds as needed
-    }
 
     # U.S. Standard Atmosphere Air Properties
     ATMOSPHERIC_PROPERTIES = {
