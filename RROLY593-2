@@ -192,32 +192,88 @@ class Olympus593:
         plt.ylabel("Value")
         plt.legend()
         plt.show()
+     def perform_thermodynamic_analysis(self):
+        # Thermodynamic analysis calculations
+        # You can include the T-s diagram and other calculations here
 
+    def simulate_engine(self):
+        for throttle in range(5):
+            for engine in engines:
+                engine.set_throttle(throttle * 25)  # Throttle positions: 0, 25, 50, 75, 100
+                engine.set_airspeed(400)  # Set airspeed for intake adjustments
+                engine.adjust_doors()
+                engine.update(1)  # Time elapsed is set to 1 for simplicity, it can be adjusted as needed
+                engine.update_intake(1)  # New method to simulate intake adjustments
+                engine.update_exhaust_nozzle(1)  # New method to simulate exhaust nozzle adjustments
+                engine.display_status()
+                engine.display_intake_status()  # New method to display intake status
+                engine.display_exhaust_nozzle_status()  # New method to display exhaust nozzle status
+                engine.display_engine_specs()  # New method to display engine specifications
+            self.perform_thermodynamic_analysis()  # Call the thermodynamic analysis function
+            time.sleep(1)
+ SPEED_OF_SOUND = {
+        15000: 720.8,  # mph
+        20000: 706.9,  # mph
+        25000: 692.6   # mph
+        # Add more altitudes and corresponding speeds as needed
+    }
+
+    # U.S. Standard Atmosphere Air Properties
+    ATMOSPHERIC_PROPERTIES = {
+        50000: (-69.70, 1.692),  # Altitude, Temperature (oF), Absolute Pressure (lb/in2)
+        60000: (-69.70, 1.049),
+        70000: (-67.42, 0.651),
+        80000: (-61.98, 0.406)
+        # Add more altitudes and corresponding properties as needed
+    }
+
+    def __init__(self, engine_id):
+        # ... (existing code)
+
+        # Additional parameters for simulation
+        self.altitude = 0
+        self.temperature = 0
+        self.air_pressure = 0
+        self.speed_of_sound = 0
+
+    def update_atmospheric_conditions(self):
+        # Update atmospheric conditions based on altitude
+        for alt, properties in self.ATMOSPHERIC_PROPERTIES.items():
+            if self.altitude <= alt:
+                temperature, air_pressure = properties
+                self.temperature = temperature
+                self.air_pressure = air_pressure
+                self.speed_of_sound = self.SPEED_OF_SOUND.get(alt, 0)
+                break
+
+    def update(self, time_elapsed):
+        # ... (existing code)
+
+        # Update atmospheric conditions
+        self.update_atmospheric_conditions()
 
 # Create four engines
 engines = [Olympus593(engine_id=i) for i in range(1, 5)]
 
 # Example usage
-try:
-    # Set airspeed vector and time steps
-    speeds = [0, "IDLE", 400, 1000, 1500]
-    time_steps = [5, 10, 20, 10, 5]
+# Example usage
+for engine in engines:
+    engine.start()
 
+try:
     for throttle in range(5):
         for engine in engines:
-            engine.start()
             engine.set_throttle(throttle * 25)  # Throttle positions: 0, 25, 50, 75, 100
-            engine.set_airspeed_vector(speeds, time_steps)
-            engine.adjust_doors()
-            engine.update(1)  # Time elapsed is set to 1 for simplicity, it can be adjusted as needed
-            engine.update_airspeed()  # New method to simulate gradual airspeed changes
-            engine.update_intake(1)  # New method to simulate intake adjustments
-            engine.update_exhaust_nozzle(1)  # New method to simulate exhaust nozzle adjustments
+            engine.set_airspeed(400)  # Set airspeed for intake adjustments
+            engine.set_altitude(50000)  # Set altitude for atmospheric conditions
+            engine.update_atmospheric_conditions()  # Update atmospheric conditions
+            engine.update(1)  # Time elapsed is set to 1 for simplicity, adjust as needed
+            engine.update_intake(1)
+            engine.update_exhaust_nozzle(1)
             engine.display_status()
-            engine.display_intake_status()  # New method to display intake status
-            engine.display_exhaust_nozzle_status()  # New method to display exhaust nozzle status
-            engine.display_engine_specs()  # New method to display engine specifications
-            engine.throttle_history.append(engine.throttle_position)
+            engine.display_intake_status()
+            engine.display_exhaust_nozzle_status()
+            engine.display_engine_specs()
         time.sleep(1)
 
 except KeyboardInterrupt:
